@@ -11,8 +11,9 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
-  end
+    @sort = params[:sort_by]
+    @movies = Movie.order(@sort)
+end
 
   def new
     # default: render 'new' template
