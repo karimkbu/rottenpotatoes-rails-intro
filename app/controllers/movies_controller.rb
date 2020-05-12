@@ -11,15 +11,37 @@ class MoviesController < ApplicationController
   end
 
   def index
+    ### solutuion a, PARTIALLY WORKING SOLUTION, DOES NOT REMEMBER FILTERING SETTINGS
     @all_ratings = Movie.ratings
-    @sort = params[:sort_by]
-    if params[:ratings].nil?
-        r_params = @all_ratings
+    @sort = params[:sort] || session[:sort]
+    session[:sort] = @sort
+    if params[:ratings].nil? 
+        @r_param = @all_ratings 
     else
-        r_params = params[:ratings].keys
+        @r_param = params[:ratings].keys
     end
-    @movies = Movie.where(rating: r_params).order(@sort)
-end
+    @movies = Movie.where(rating: @r_param).order(session[:sort])
+    
+    
+    ### SOLUTION B, error: undefined method 'keys' for nil:NilClass ###
+    #@all_ratings = Movie.ratings
+    #@sort = params[:sort] || session[:sort]
+    #session[:sort] = @sort
+    #if params[:ratings].nil? 
+    #    @r_param = @all_ratings || session[:rating]
+    #else
+    #    @r_param = params[:rating].keys
+    #end
+    #session[:rating] = @r_param
+    #@movies = Movie.where(rating: session[:rating]).order(session[:sort])
+    
+    ### SOLUTION C, error: undefined method `keys' for ["G", "PG", "PG-13", "R"]:Array ###
+    #@sort = params[:sort] || session[:sort]
+    #@r_param = params[:ratings] || session[:ratings] || {'G' => '','PG' => '','PG-13' => '','R' => ''}
+    #session[:sort] = @sort
+    #session[:ratings] = @r_param
+    #@movies = Movie.where(rating: session[:ratings].keys).order(session[:sort])
+  end
 
   def new
     # default: render 'new' template
